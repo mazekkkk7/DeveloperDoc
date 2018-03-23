@@ -1,0 +1,193 @@
+测试账号:
+	"loginName": "15652867404"
+	"password": "eP+PvF7kuultxcL5WktQEsz9Yer3CgRvchrwcJhAPlP28h3/gPODwOTOs+HTTByktlm6+PPM9djTGbBUzyAHIMWKi3WTEXvggbMUkjKfUp6M7GZhRugVt03kygoedIugaGvcjCFmmpXgOHEnd8rOfEfrzcGKVOjXL00DUMNI2w4="
+	"password":"diIBOLxgWOmGb12HsMPiU0SIQ53zRBtkrP9UoG9w8H8JMFPIQzoyxOfK3QIIOtFw0P+fmQzmvkPm7Unc0HPxRdxpLF86ixa0LPw3XRkMm89lpdWA7hQHGK9tFd/MRQKObuW8dGV5R3/W64TpYjDmYqxg9xibCCmejoKBKneewE="
+
+api1:
+	#连接命令
+	ssh -l root -p 22 116.62.109.44
+		Member
+			拷贝test
+			scp -vr /opt/skykingkong/mem/memberTest/member root@116.62.109.44:/opt/skykingkong/mem/
+		Search
+			拷贝test
+			scp -vr /opt/skykingkong/int/searchTest/search root@116.62.109.44:/opt/skykingkong/int/
+api2:
+	#连接命令
+	ssh -l root -p 22 101.37.174.201
+		Member
+			拷贝prod
+			scp -vr /opt/skykingkong/mem/member-api2/member root@101.37.174.201:/opt/skykingkong/mem/
+		Search
+			拷贝prod
+			scp -vr /opt/skykingkong/int/search-api2/search root@101.37.174.201:/opt/skykingkong/int/
+		Push
+			拷贝prod
+			scp -vr /opt/skykingkong/int/push-api2/push root@101.37.174.201:/opt/skykingkong/int/
+		Treat
+			拷贝prod
+			scp -vr /opt/skykingkong/srv/srvProd/srv/lib root@101.37.174.201:/opt/skykingkong/srv/treat/
+			scp -v /opt/skykingkong/srv/srvProd/srv/* root@101.37.174.201:/opt/skykingkong/srv/treat/
+dev:
+	#连接命令
+	ssh -l root -p 22 192.168.1.88
+		Member
+			拷贝dev
+			scp -vr /opt/skykingkong/mem/memberTest/member root@192.168.1.88:/opt/skykingkong/mem/
+		Search
+			拷贝dev
+			scp -vr /opt/skykingkong/int/searchTest/search root@192.168.1.88:/opt/skykingkong/int/
+		Push
+			拷贝testNF
+			scp -vr /opt/skykingkong/int/pushTestNF/push root@192.168.1.88:/opt/skykingkong/int/
+testNF:
+	#连接命令
+	ssh -l root -p 22 192.168.1.66
+	#密码
+	JKadmin@testnf
+		Member
+			拷贝testNF
+			scp -vr /opt/skykingkong/mem/memberTestNF/member root@192.168.2.6:/opt/skykingkong/mem/
+		Search
+			拷贝testNF
+			scp -vr /opt/skykingkong/int/searchTestNF/search root@192.168.2.6:/opt/skykingkong/int/
+		Push
+			拷贝testNF
+			scp -vr /opt/skykingkong/int/pushTestNF/push root@192.168.2.6:/opt/skykingkong/int/
+		Order
+			拷贝testNF
+			scp -vr /opt/skykingkong/srv/order-testnf/skykingkong-srv-order-server-1.2.0-SNAPSHOT.jar root@192.168.2.6:/opt/skykingkong/srv/order/
+
+
+ES脚本拷贝:
+	#连接命令
+		ssh -l root -p 22 116.62.26.95 JKadmin@jkcloud5 prod
+		ssh -l root -p 22 192.168.1.177 jkcloudadmin dev
+		ssh -l root -p 22 118.31.236.154 JKadmin@32G
+		ssh -l root -p 22 118.31.237.102 JKadmin@32G
+	拷贝整个Script:
+		Dev环境:
+			从1.77到Dev环境
+				scp -vr /opt/skykingkong/int/searchScript/scripts/ root@192.168.1.177:/data/elasticsearch/es1/config/
+		TestNF环境:
+			从1.77到TestNF环境(154)
+				scp -vr /opt/skykingkong/int/searchScript/scripts/ root@118.31.236.154:/data/elasticsearch/testnf/config/
+		PreOnline环境:
+			从1.77到154主
+				scp -vr /opt/skykingkong/int/searchScript/scripts/ root@118.31.236.154:/data/elasticsearch/preonline-node2/config
+			从1.77到102从属
+				scp -vr /opt/skykingkong/int/searchScript/scripts/ root@118.31.237.102:/data/elasticsearch/preonline-node1/config
+		Prod环境:
+			从1.77到154主
+				scp -vr /opt/skykingkong/int/searchScript/prod/scripts/ root@118.31.236.154:/data/elasticsearch/es1/config
+			从1.77到从属102
+				scp -vr /opt/skykingkong/int/searchScript/prod/scripts/ root@118.31.237.102:/data/elasticsearch/es1/config
+ES数据迁移:
+	#机器地址
+		118.31.236.154
+	#ElasticSearchDump安装
+		npm install -g elasticdump
+	#拷贝结构命令
+		elasticdump --input=http://mysrc.com:9200/my_index --output=http://mydest.com:9200/my_index --type=mapping
+	#拷贝数据命令
+		elasticdump --input=http://mysrc.com:9200/my_index --output=http://mydest.com:9200/my_index --type=data
+	#配置调整
+		/elasticdump/elasticdump.js
+		from:
+			self.options.searchBody = {"query": { "match_all": {} }, "fields": ["*"], "_source": true };
+		to:
+			self.options.searchBody = {"query": { "match_all": {} }, "stored_fields": ["*"], "_source": true };
+
+ES字典copy:
+	Root:
+		scp -vr root@192.168.1.177:/data/elasticsearch/es1/plugins/elasticsearch/config/stop_word_new.dic /opt/skykingkong/int/key-word-dic/stop_word_new.dic
+	Dev:
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@192.168.1.177:/data/elasticsearch/es1/plugins/elasticsearch/config/
+	TestNF:
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@118.31.236.154:/data/elasticsearch/testnf/plugins/elasticsearch/config/
+	PreOnline:
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@118.31.236.154:/data/elasticsearch/preonline-node2/plugins/elasticsearch/config/
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@118.31.237.102:/data/elasticsearch/preonline-node1/plugins/elasticsearch/config/
+	Online:
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@118.31.236.154:/data/elasticsearch/es1/plugins/elasticsearch/config/
+		scp -vr /opt/skykingkong/int/key-word-dic/* root@118.31.237.102:/data/elasticsearch/es1/plugins/elasticsearch/config/
+
+Shell脚本拷贝:
+	拷贝api1环境脚本:
+		scp -vr /opt/skykingkong/shell/api1/* root@116.62.109.44:/opt/run-script/
+	拷贝api2环境脚本:
+		scp -vr /opt/skykingkong/shell/api2/* root@101.37.174.201:/opt/run-script/
+	拷贝testnf环境脚本:
+		scp -vr /opt/skykingkong/shell/testnf/* root@192.168.2.6:/opt/run-script/
+	拷贝dev环境脚本:
+		scp -vr /opt/skykingkong/shell/dev/* root@192.168.1.88:/opt/run-script/
+
+ES脚本:
+	删除type类型下的所有数据:
+		删除医院所有数据:
+			POST /skykingkong_es_cloud/es_hospital/_delete_by_query
+			{
+			    "query":{
+			        "match_all": {}
+			    }
+			}
+		删除医生所有数据:
+			POST /skykingkong_es_cloud/es_doctor/_delete_by_query
+			{
+			    "query":{
+			        "match_all": {}
+			    }
+			}
+	查询语句:
+		查询医院:
+			GET /skykingkong_es_cloud/es_hospital/_search
+			{
+			    "query":{
+			        "match_phrase": {
+			           "name": ""
+			        }
+			    }
+			}
+		查询医生:
+			GET /skykingkong_es_cloud/es_doctor/_search
+			{
+			    "query":{
+			        "match_phrase": {
+			           "name": ""
+			        }
+			    }
+			}
+	关键词分析:
+		IK_MAX_WORD分析器:
+			POST _analyze
+			{
+			  "analyzer": "ik_max_word",
+			  "text": "北京市东城区"
+			}
+		IK_SMART分析器:
+			POST _analyze
+			{
+			  "analyzer": "ik_smart",
+			  "text": "北京市东城区"
+			}
+
+数据库配置:
+	Online:
+		url: jdbc:mysql://114.55.214.122:3306/skk_mem_member_online?characterEncoding=utf8
+	Online2:
+		url: jdbc:mysql://114.55.214.122:3306/skk_mem_member_online2?characterEncoding=utf8
+	Test:
+		url: jdbc:mysql://114.55.214.122:3306/skk_mem_member_dev?characterEncoding=utf8
+
+other:
+	jenkins:
+		192.168.1.77
+		jkgjci/Jkgj1@3$
+	dubbo:
+		http://192.168.1.50:8080/dubbo-admin-2.8.4/governance/services
+		test环境dubbo控制台，root/root
+
+基础运行命令:
+	java -jar -Xms256m -Xmx256m -Dspring.profiles.active=testNF -DinstanceIpAddress=116.62.107.223 -Dlogging.file=/opt/skykingkong/mem/member/logs/skykingkong-member-application.log /opt/skykingkong/mem/member/skykingkong-mem-member-application-1.0.1-SNAPSHOT.jar
+
+	java -jar -Xms256m -Xmx256m -Dspring.profiles.active=test -DinstanceIpAddress=116.62.109.44 -Dlogging.file=/opt/skykingkong/mem/member/logs/skykingkong-member-application.log /opt/skykingkong/mem/member/skykingkong-mem-member-application-1.0.1-SNAPSHOT.jar
