@@ -1,0 +1,17 @@
+{
+  "正则表达式": {
+    "匹配每行的最后及换行": "($\n)"
+  },
+  "js获取时间戳": {
+    "js生成时间戳(毫秒)": "Date.parse(new Date());"
+  },
+  "FastJson非严格序列化": {
+    "用在Json.toJSONString()前": "ParserConfig.getGlobalInstance().setAsmEnable(false); "
+  },
+  "正则表达式取${}中的值": {
+    "正则字符串": "(?<=\\$\\{)(.+?)(?=\\})"
+  },
+  "抓取热词链接": {
+    "热词链接线上": "https://api.jiukangguoji.cn/search/v1/keywords/hot/word/list"
+  }
+}
