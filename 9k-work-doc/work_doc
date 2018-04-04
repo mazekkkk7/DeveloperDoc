@@ -187,7 +187,7 @@ other:
 		http://192.168.1.50:8080/dubbo-admin-2.8.4/governance/services
 		test环境dubbo控制台，root/root
 
-基础运行命令:
+terminal运行命令:
 	java -jar -Xms256m -Xmx256m -Dspring.profiles.active=testNF -DinstanceIpAddress=116.62.107.223 -Dlogging.file=/opt/skykingkong/mem/member/logs/skykingkong-member-application.log /opt/skykingkong/mem/member/skykingkong-mem-member-application-1.0.1-SNAPSHOT.jar
 
 	java -jar -Xms256m -Xmx256m -Dspring.profiles.active=test -DinstanceIpAddress=116.62.109.44 -Dlogging.file=/opt/skykingkong/mem/member/logs/skykingkong-member-application.log /opt/skykingkong/mem/member/skykingkong-mem-member-application-1.0.1-SNAPSHOT.jar
