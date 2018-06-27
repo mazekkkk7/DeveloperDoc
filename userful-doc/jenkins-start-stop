@@ -1,4 +1,5 @@
 {
     "jenkins start": "/usr/bin/java -Dfile.encoding=UTF-8 -XX:PermSize=256m -XX:MaxPermSize=512m -Xms256m -Xmx512m -Djava.io.tmpdir=/Users/Shared/Jenkins/tmp -jar /Applications/Jenkins/jenkins.war --httpPort=8080",
-    "jenkins 插件注意事项": "如果需要下载插件需要关闭代理(例如lantern)"
+    "jenkins 插件注意事项": "如果需要下载插件需要关闭代理(例如lantern)",
+    "spring boot 工程如果构建失败提示ClassNotFoundException需要在Maven中加插件" : "spring-boot-maven-plugin"
 }
