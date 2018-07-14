@@ -1,0 +1,7 @@
+# 表示该docker-compose.yml 文件使用的是 Version 2 file format
+version: "2"
+services:
+  eureka:
+    image: mazekkkk/microservice-discovery-eureka:0.0.1
+    ports:
+      - "8761:8761"
