@@ -1,5 +1,5 @@
 # docker $(docker-machine config default) ps
-# docker-compose $(docker-machine config default) scale peer1=1 peer2=1 zuul-node-1=1 zuul-node-2=1 zuul-node-3=1 microservice-hystrix-dashboard=1 microservice-provider-user=3 microservice-consumer-movie-ribbon-hystrix=3 microservice-hystrix-turbine=3
+# docker-compose $(docker-machine config default) scale peer1=1 peer2=1 microservice-hystrix-dashboard=1 microservice-gateway-zuul-node1=1 microservice-gateway-zuul-node2=1 microservice-gateway-zuul-node3=1 microservice-provider-user=3 microservice-consumer-movie-ribbon-hystrix=3 microservice-hystrix-turbine=3
 # docker-compose $(docker-machine config default) scale microservice-provider-user=1 microservice-consumer-movie-ribbon-hystrix=1 microservice-gateway-zuul=1 microservice-hystrix-turbine=1
 version: "2"
 services:
@@ -21,27 +21,18 @@ services:
         image: mazekkkk/microservice-provider-user:0.0.1
     microservice-consumer-movie-ribbon-hystrix:
         image: mazekkkk/microservice-consumer-movie-ribbon-hystrix:0.0.1
-    zuul-node-1:
+    microservice-gateway-zuul-node1:
         image: mazekkkk/microservice-gateway-zuul:0.0.1
-        hostname: zuul-node-1
         ports:
-            - "8041:8041"
-        environment:
-            - spring.profiles.active=zuul-node-1
-    zuul-node-2:
+            - "8042:8041"
+    microservice-gateway-zuul-node2:
         image: mazekkkk/microservice-gateway-zuul:0.0.1
-        hostname: zuul-node-2
         ports:
-            - "8042:8042"
-        environment:
-            - spring.profiles.active=zuul-node-2
-    zuul-node-3:
+            - "8043:8041"
+    microservice-gateway-zuul-node3:
         image: mazekkkk/microservice-gateway-zuul:0.0.1
-        hostname: zuul-node-3
         ports:
-            - "8043:8043"
-        environment:
-            - spring.profiles.active=zuul-node-3
+            - "8044:8041"
     microservice-hystrix-dashboard:
         image: mazekkkk/microservice-hystrix-dashboard:0.0.1
     microservice-hystrix-turbine:
