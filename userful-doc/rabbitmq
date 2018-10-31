@@ -8,4 +8,4 @@ rabbitmq-plugins enable rabbitmq_management
 
 打开http://localhost:15672/即可看到管理后台
 
-用户名密码均为guest
+密码修改了
