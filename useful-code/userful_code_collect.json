@@ -16,5 +16,8 @@
     },
     "查看编译后的代码": {
         "打开terminal对class文件进行源码查看": "javap -c XXX.class"
+    },
+    "jdbcTemplate可以使用具名参数没有sql注入风险亲测": {
+        "依赖于jdbcTemplate对象": "NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);"
     }
 }
