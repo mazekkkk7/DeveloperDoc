@@ -1,0 +1,60 @@
+version: "2"
+services:
+  rabbit-mq:
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    hostname: rabbit-mq1
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/spring-cloud-single-example/rabbitmq/home/:/var/lib/rabbitmq/
+      - /Users/maze/Docker/spring-cloud-single-example/rabbitmq/config/:/etc/rabbitmq/
+    command: bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_management; rabbitmq-server; "
+  redis:
+      image: redis
+      container_name: my_redis
+      command: bash -c "redis-server /usr/local/etc/redis.conf | redis-sentinel /usr/local/etc/sentinel.conf"
+      ports:
+          - "6379:6379"
+          - "26379:26379"
+      volumes:
+          - /Users/maze/Docker/spring-cloud-single-example/redis/data/:/data
+          - /Users/maze/Docker/spring-cloud-single-example/redis/config/redis-slave1.conf:/usr/local/etc/redis.conf
+          - /Users/maze/Docker/spring-cloud-single-example/redis/config/sentinel.conf:/usr/local/etc/sentinel.conf
+  spring-config:
+      image: mazekkkk/spring-cloud-mazekkkk-config-server:0.0.2
+      hostname: spring-cloud-mazekkkk-config-server
+      ports:
+          - "9921:9921"
+      depends_on:
+          - rabbit-mq
+  spring-eureka1:
+      image: mazekkkk/spring-cloud-eureka:0.0.2
+      hostname: peer1
+      ports:
+          - "8761:8761"
+      environment:
+          - spring.profiles.active=peer1
+      depends_on:
+          - spring-config
+  spring-eureka2:
+      image: mazekkkk/spring-cloud-eureka:0.0.2
+      hostname: peer2
+      ports:
+          - "8762:8762"
+      environment:
+          - spring.profiles.active=peer2
+      depends_on:
+          - spring-config
+  spring-basic-lcn:
+      image: mazekkkk/tx-lcn-basic:0.0.1
+      hostname: tx-lcn-basic
+      ports:
+          - "9999:9999"
+          - "8899:8899"
+      depends_on:
+          - spring-eureka1
+          - spring-eureka2

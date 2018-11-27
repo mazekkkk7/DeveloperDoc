@@ -1,0 +1,50 @@
+version: "2"
+services:
+  rabbit-mq1:
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    hostname: rabbit-mq1
+    image: "rabbitmq:3-management"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/rabbitmq/slave1/home/:/var/lib/rabbitmq/
+      - /Users/maze/Docker/rabbitmq/slave1/config/:/etc/rabbitmq/
+    command:     bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_management; rabbitmq-server; "
+  rabbit-mq2:
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    hostname: rabbit-mq2
+    depends_on:
+      - rabbit-mq1
+    image: "rabbitmq:3-management"
+    ports:
+      - "15673:15672"
+      - "5673:5672"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/rabbitmq/slave2/home/:/var/lib/rabbitmq/
+      - /Users/maze/Docker/rabbitmq/slave2/config/:/etc/rabbitmq/
+    command: bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_management; rabbitmq-server; "
+    links:
+      - rabbit-mq1:rabbit-mq1
+  rabbit-mq3:
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret_cookie'
+    hostname: rabbit-mq3
+    depends_on:
+      - rabbit-mq1
+    image: "rabbitmq:3-management"
+    ports:
+      - "15674:15672"
+      - "5674:5672"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/rabbitmq/slave3/home/:/var/lib/rabbitmq/
+      - /Users/maze/Docker/rabbitmq/slave3/config/:/etc/rabbitmq/
+    command: bash -c "sleep 10; rabbitmq-plugins enable rabbitmq_management; rabbitmq-server; "
+    links:
+      - rabbit-mq1:rabbit-mq1
+      - rabbit-mq2:rabbit-mq2

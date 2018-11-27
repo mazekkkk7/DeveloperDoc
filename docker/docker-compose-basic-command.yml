@@ -1,0 +1,81 @@
+# linux start
+linux:
+ 在当前文件夹查找以.java和.xml结尾的文件 并删除: find ./redis -regex ".*.[aof|conf]" | xargs rm -rf
+ 给redis递归授权777: chmod -R 777 /redis
+ shell中取出第一列第二行: | awk '{print $1}' | sed -n '2p')
+ shell中替换字符串: ${basic_info//source/target}\
+ linux添加路由规则: route add -net 192.168.0.0/24 dev eth0
+# linux end
+
+# docker start
+docker:
+  查看日志: docker-compose $(docker-machine config default) logs -f
+  直接进入正在运行的容器交互: docker exec -it myrabbit1 bash
+  大部分的真实配置文件都在: /usr/lib/application-name
+  批量停止docker进程: docker stop $(docker ps -a -q | grep my_redis)|docker rm $(docker ps -a -q | grep my_redis)
+  可以指定挂载目录保存数据: docker -v
+  运行命令: docker-compose $(docker-machine config default) up
+  查看进程: docker $(docker-machine config default) ps
+  显示所有进程包括未运行的: -a 所有  -q 只显示container id docker ps -a -q
+  进入docker容器第一步: $ sudo docker run -itd ubuntu:14.04 /bin/bash
+  进入docker容器: $ sudo docker attach 44fc0f0582d9
+  容器间相互依赖启动顺序: depends_on: \r - "container_name"
+# docker end
+
+# redis start
+redis:
+  查看redis 信息: redis-cli -h 192.168.99.100 -a '60361173!@#a' -p 26385 info
+  查看redis 集群信息: redis-cli -h 192.168.99.100 -a '60361173!@#a' -p 6380 info replication
+# redis end
+
+# spring-cloud start
+spring-cloud:
+  command: docker-compose $(docker-machine config default) scale peer1=1 peer2=1 microservice-hystrix-dashboard=1 microservice-gateway-zuul-node1=1 microservice-gateway-zuul-node2=1 microservice-gateway-zuul-node3=1 microservice-provider-user=3 microservice-consumer-movie-ribbon-hystrix=3 microservice-hystrix-turbine=3
+  command2: docker-compose $(docker-machine config default) scale microservice-provider-user=1 microservice-consumer-movie-ribbon-hystrix=1 microservice-gateway-zuul=1 microservice-hystrix-turbine=1
+# spring-cloud end
+
+# rabbitmq start
+rabbitmq:
+  note: rabbitmq 如果需要自定义配置那需要先指定rabbitmq-env.conf 然后在rabbitmq-env.conf 中指定配置文件 否则的话是无法添加配置文件的
+  指定为内存模式: --ram
+  node1-master-配置:
+    step1: docker exec -it myrabbit1 bash
+    step2: rabbitmqctl stop_app
+    step3: rabbitmqctl reset
+    step4: rabbitmqctl start_app
+    step5: exit
+  node2-slave1-配置:
+    step1: docker exec -it myrabbit2 bash
+    step2: rabbitmqctl stop_app
+    step3: rabbitmqctl reset
+    step4: rabbitmqctl join_cluster --ram rabbit@rabbit1
+    step5: rabbitmqctl start_app
+    step6: exit
+  node3-slave2-配置:
+    step1: docker exec -it myrabbit3 bash
+    step2: rabbitmqctl stop_app
+    step3: rabbitmqctl reset
+    step4: rabbitmqctl join_cluster --ram rabbit@rabbit1
+    step5: rabbitmqctl start_app
+    step6: exit
+# rabbitmq end
+
+# mysql start
+mysql:
+    note1: 服务启动后使用docker exec -it 分别进到容器中运行命令
+    note2: mysql 使用的是本机的docker 并非 192.168.99.100
+    连接mysql并执行命令: mysql -u root -p'${pwd}' -e 'cmd';
+    master-node:
+        主执行脚本1: CREATE USER 'slave1'@'%' IDENTIFIED BY 'liugeyi';
+        主执行脚本2: GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave1'@'%';
+        主执行脚本3: CREATE USER 'slave2'@'%' IDENTIFIED BY 'liugeyi';
+        主执行脚本4: GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave2'@'%';
+    slave-node1:
+        从执行脚本1: change master to master_host='mysql-master', master_user='slave1', master_password='liugeyi', master_port=3306, master_log_file='master.000012', master_log_pos=154, master_connect_retry=30;
+        从执行脚本2: start slave;
+        从执行脚本3: show slave status;
+    slave-node2:
+        从执行脚本1: change master to master_host='mysql-master', master_user='slave2', master_password='liugeyi', master_port=3306, master_log_file='master.000012', master_log_pos=154, master_connect_retry=30;
+        从执行脚本2: start slave;
+        从执行脚本3: show slave status;
+# mysql end

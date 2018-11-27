@@ -1,0 +1,34 @@
+version: "2"
+services:
+    spring-config:
+        image: mazekkkk/spring-cloud-mazekkkk-config-server:0.0.1
+        hostname: spring-cloud-mazekkkk-config-server
+        ports:
+            - "9921:9921"
+    spring-eureka1:
+        image: mazekkkk/spring-cloud-eureka:0.0.1
+        hostname: peer1
+        ports:
+            - "8761:8761"
+        environment:
+            - spring.profiles.active=peer1
+        depends_on:
+            - spring-config
+    spring-eureka2:
+        image: mazekkkk/spring-cloud-eureka:0.0.1
+        hostname: peer2
+        ports:
+            - "8762:8762"
+        environment:
+            - spring.profiles.active=peer2
+        depends_on:
+            - spring-config
+    spring-basic-lcn:
+        image: mazekkkk/tx-lcn-basic:0.0.1
+        hostname: tx-lcn-basic
+        ports:
+            - "9999:9999"
+            - "8899:8899"
+        depends_on:
+            - spring-eureka1
+            - spring-eureka2

@@ -1,25 +1,16 @@
-# 在当前文件夹查找以.java和.xml结尾的文件 并删除
-# find ./redis -regex ".*.[aof|conf]" | xargs rm -rf
-# 给redis递归授权777
-# chmod -R 777 /redis
-# $ sudo docker run -itd ubuntu:14.04 /bin/bash 进入docker容器第一步
-# $ sudo docker attach 44fc0f0582d9             进入docker容器
-# docker -v 参数可以指定挂载目录保存数据
-# docker-compose $(docker-machine config default) up 运行命令
-# docker $(docker-machine config default) ps 查看进程
-# docker-compose $(docker-machine config default) scale peer1=1 peer2=1 microservice-hystrix-dashboard=1 microservice-gateway-zuul-node1=1 microservice-gateway-zuul-node2=1 microservice-gateway-zuul-node3=1 microservice-provider-user=3 microservice-consumer-movie-ribbon-hystrix=3 microservice-hystrix-turbine=3
-# docker-compose $(docker-machine config default) scale microservice-provider-user=1 microservice-consumer-movie-ribbon-hystrix=1 microservice-gateway-zuul=1 microservice-hystrix-turbine=1
 version: "2"
 services:
     redis1:
         image: redis
         container_name: my_redis
-        command: redis-server /usr/local/etc/redis.conf
+        command: bash -c "redis-server /usr/local/etc/redis.conf | redis-sentinel /usr/local/etc/sentinel.conf"
         ports:
             - "6379:6379"
+            - "26379:26379"
         volumes:
-            - /Users/maze/Docker/redis/slave1/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave1.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave1/data/:/data
+            - /Users/maze/Docker/redis/slave1/config/redis-slave1.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave1/config/sentinel.conf:/usr/local/etc/sentinel.conf
     redis2:
         image: redis
         container_name: my_redis2
@@ -28,9 +19,9 @@ services:
             - "6380:6380"
             - "26380:26380"
         volumes:
-            - /Users/maze/Docker/redis/slave2/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave2.conf:/usr/local/etc/redis.conf
-            - /Users/maze/Docker/redis/slave2/sentinel.conf:/usr/local/etc/sentinel.conf
+            - /Users/maze/Docker/redis/slave2/data/:/data
+            - /Users/maze/Docker/redis/slave2/config/redis-slave2.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave2/config/sentinel.conf:/usr/local/etc/sentinel.conf
         depends_on:
             - 'redis1'
     redis3:
@@ -41,9 +32,9 @@ services:
             - "6381:6381"
             - "26381:26381"
         volumes:
-            - /Users/maze/Docker/redis/slave3/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave3.conf:/usr/local/etc/redis.conf
-            - /Users/maze/Docker/redis/slave3/sentinel.conf:/usr/local/etc/sentinel.conf
+            - /Users/maze/Docker/redis/slave3/data/:/data
+            - /Users/maze/Docker/redis/slave3/config/redis-slave3.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave3/config/sentinel.conf:/usr/local/etc/sentinel.conf
         depends_on:
             - 'redis1'
     redis4:
@@ -54,9 +45,9 @@ services:
             - "6382:6382"
             - "26382:26382"
         volumes:
-            - /Users/maze/Docker/redis/slave4/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave4.conf:/usr/local/etc/redis.conf
-            - /Users/maze/Docker/redis/slave4/sentinel.conf:/usr/local/etc/sentinel.conf
+            - /Users/maze/Docker/redis/slave4/data/:/data
+            - /Users/maze/Docker/redis/slave4/config/redis-slave4.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave4/config/sentinel.conf:/usr/local/etc/sentinel.conf
         depends_on:
             - 'redis1'
     redis5:
@@ -67,9 +58,9 @@ services:
             - "6383:6383"
             - "26383:26383"
         volumes:
-            - /Users/maze/Docker/redis/slave5/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave5.conf:/usr/local/etc/redis.conf
-            - /Users/maze/Docker/redis/slave5/sentinel.conf:/usr/local/etc/sentinel.conf
+            - /Users/maze/Docker/redis/slave5/data/:/data
+            - /Users/maze/Docker/redis/slave5/config/redis-slave5.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave5/config/sentinel.conf:/usr/local/etc/sentinel.conf
         depends_on:
             - 'redis1'
     redis6:
@@ -80,8 +71,8 @@ services:
             - "6384:6384"
             - "26384:26384"
         volumes:
-            - /Users/maze/Docker/redis/slave6/:/data
-            - /Users/maze/Desktop/config/docker-config/redis-slave6.conf:/usr/local/etc/redis.conf
+            - /Users/maze/Docker/redis/slave6/data/:/data
+            - /Users/maze/Docker/redis/slave6/config/redis-slave6.conf:/usr/local/etc/redis.conf
             - /Users/maze/Docker/redis/slave6/sentinel.conf:/usr/local/etc/sentinel.conf
         depends_on:
             - 'redis1'

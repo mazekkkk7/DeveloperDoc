@@ -1,0 +1,46 @@
+version: "2"
+services:
+  mysql-master:
+    environment:
+      MYSQL_ROOT_PASSWORD: liugeyi
+    hostname: mysql-master
+    image: "mysql:5.7"
+    ports:
+      - "3307:3306"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/mysql/mysql-master/config/my.cnf:/etc/mysql/my.cnf
+      - /Users/maze/Docker/mysql/mysql-master/data:/var/lib/mysql/
+    command: --default-authentication-plugin=mysql_native_password
+  mysql-slave1:
+    environment:
+      MYSQL_ROOT_PASSWORD: liugeyi
+    hostname: mysql-slave1
+    depends_on:
+      - mysql-master
+    image: "mysql:5.7"
+    ports:
+      - "3308:3306"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/mysql/mysql-slave1/config/my.cnf:/etc/mysql/my.cnf
+      - /Users/maze/Docker/mysql/mysql-slave1/data:/var/lib/mysql/
+    command: --default-authentication-plugin=mysql_native_password
+    links:
+      - "mysql-master:mysql-master"
+  mysql-slave2:
+    environment:
+      MYSQL_ROOT_PASSWORD: liugeyi
+    hostname: mysql-slave2
+    depends_on:
+      - mysql-master
+    image: "mysql:5.7"
+    ports:
+      - "3309:3306"
+    tty: true
+    volumes:
+      - /Users/maze/Docker/mysql/mysql-slave2/config/my.cnf:/etc/mysql/my.cnf
+      - /Users/maze/Docker/mysql/mysql-slave2/data:/var/lib/mysql/
+    command: --default-authentication-plugin=mysql_native_password
+    links:
+      - "mysql-master:mysql-master"
